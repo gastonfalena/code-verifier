@@ -2,7 +2,7 @@ export const LogInfo = (message: string) => {
   console.log(`Info: ${message}`)
 }
 
-export const LogSucces = (message: string) => {
+export const LogSuccess = (message: string) => {
   console.log(`Success: ${message}`)
 }
 
