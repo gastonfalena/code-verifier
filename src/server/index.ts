@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
-import router from '../routes'
+import rootRout from '../routes'
 // TODO: HTTPS
 
 // Create Express APP
@@ -9,7 +9,9 @@ const server: Express = express()
 
 //Define SERVER to use "/api" and  use rootRouter from 'index.ts' in routes
 //From this points onover: htpp://localhost:8000/api/...
-server.use('/api', router)
+server.use('/api', rootRout)
+// Static server
+server.use(express.static('public'))
 
 // TODO: Mongoose Connection
 
