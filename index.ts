@@ -1,7 +1,7 @@
 import express, { type Express, type Request, type Response } from 'express'
 import dotenv from 'dotenv'
-import server from '@/server'
-import { LogError, LogSuccess } from '@/utils/logger'
+import server from './src/server'
+import { LogError, LogSuccess } from './src/utils/logger'
 
 // Configuration the .env file
 dotenv.config()
