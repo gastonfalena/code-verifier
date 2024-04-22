@@ -16,6 +16,7 @@ let rootRouter = express.Router()
 // Activatge for requests to http://localhost:8000/api
 
 rootRouter.get('/', (req: Request, res: Response) => {
+  LogInfo('GET: http://localhost:8000/api')
   //Send Hello world
   res.send('Welcome to my API')
 })
@@ -24,3 +25,5 @@ rootRouter.get('/', (req: Request, res: Response) => {
 
 server.use('/', rootRouter) //http://localhost:8000/api
 server.use('/hello', helloRouter) //http://localhost:8000/api/hello
+//Add more routes to the app
+export default server
