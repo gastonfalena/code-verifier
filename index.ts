@@ -11,7 +11,7 @@ const port = process.env.PORT || 8000
 // Execute SERVER
 
 server.listen(port, () => {
-  LogSuccess(`[SERVER ON] : Running in htpp://localhost:8000/api`)
+  LogSuccess(`[SERVER ON] : Running in http://localhost:8000/api`)
 })
 
 // Control SERVER ERROR
