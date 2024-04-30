@@ -1,7 +1,6 @@
 import { userEntity } from '../entities/user.entity'
 import { LogSuccess, LogError } from '@/utils/logger'
 
-// File ORM =~ Repository in MVC and Entity =~ Models
 //CRUD
 /**
  * Method to obtain all Users from Collection "Users" in Mongo Sever

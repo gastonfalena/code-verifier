@@ -2,6 +2,9 @@ import express, { Express, Request, Response } from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import rootRout from '../routes'
+import swaggerUi from 'swagger-ui-express'
+import mongoose from 'mongoose'
+
 // TODO: HTTPS
 
 // Create Express APP
@@ -14,6 +17,18 @@ server.use('/api', rootRout)
 server.use(express.static('public'))
 
 // TODO: Mongoose Connection
+mongoose.connect('mongodb://127.0.0.1:27017/codeverification')
+//Swagger
+server.use(
+  '/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(undefined, {
+    swaggerOptions: {
+      url: '/swagger.json',
+      explorer: true,
+    },
+  })
+)
 
 //Security Config
 server.use(helmet())
