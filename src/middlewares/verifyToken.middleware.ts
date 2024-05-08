@@ -1,5 +1,9 @@
 import jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
+import dotenv from 'dotenv'
+//config dotenv to read enviroment variables
+dotenv.config()
+const secret = process.env.SECRETKEY || 'mysecret'
 /**
  *
  * @param {Request} Original request previous middleware of verification JWT
@@ -23,7 +27,7 @@ export const verifyToken = (
     })
   }
   //Verify the token obtained
-  jwt.verify(token, '', (err: any, decoded: any) => {
+  jwt.verify(token, secret, (err: any, decoded: any) => {
     if (err) {
       return res.status(500).send({
         authentication: 'JWT Verification failed',

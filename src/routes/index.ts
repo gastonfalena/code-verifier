@@ -29,6 +29,6 @@ server.use('/', rootRouter) //http://localhost:8000/api
 server.use('/hello', helloRouter) //http://localhost:8000/api/hello
 server.use('/users', userRouter) //http://localhost:8000/api/users ---> UserRouter
 //Auth router
-server.use('/auth', authRouter)
+server.use('/auth', authRouter) //http://localhost:8000/api/auth ---> AuthRouter
 //Add more routes to the app
 export default server

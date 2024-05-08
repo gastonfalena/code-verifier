@@ -3,7 +3,13 @@ import { IAuthController } from './interfaces'
 import { LogSuccess, LogError, LogWarning } from '../utils/logger'
 import { IUser } from '../domain/interfaces/IUser.interface'
 import { IAuth } from '../domain/interfaces/IAuth.interface'
-import { registerUser, loginUser, logoutUser } from '../domain/orm/User.orm'
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getUserByID,
+} from '../domain/orm/User.orm'
+import { AuthResponse, ErrorResponse } from './types'
 
 @Route('/api/auth')
 @Tags('AuthController')
@@ -22,28 +28,42 @@ export class AuthController implements IAuthController {
     } else {
       LogError('[/api/auth] Register needs User')
       response = {
-        message: 'Please, provide a User Entity to create one',
+        message:
+          'User not Registered: Please, provide a User Entity to create one',
       }
     }
     return response
   }
   @Post('/login')
   public async loginUser(auth: IAuth): Promise<any> {
-    let response: any = ''
+    let response: AuthResponse | ErrorResponse | undefined
     if (auth) {
       LogSuccess(`[/api/auth/login] Login User: ${auth.email}`)
-      await loginUser(auth).then((r) => {
-        LogSuccess(`[/api/auth/login] Create User: ${auth.email}`)
-        response = {
-          message: `User login in successfully: ${auth.email}`,
-          token: r.token, // JWT generated for logged in user
-        }
-      })
+      let data = await loginUser(auth)
+      response = {
+        token: data.token,
+        message: `Welcome, ${data.user.name}`,
+      }
     } else {
       LogError('[/api/auth] Register needs Auth entity')
       response = {
+        error: '[ATUH ERROR]: Email & Password are needed',
         message: 'Please, provide a Email && password to login',
       }
+    }
+    return response
+  }
+  /**
+   * @param {string} id Id of user to retreive (optional)
+   * @returns All user or user found by Id
+   */
+  @Get('/me')
+  public async userData(@Query() id: string): Promise<any> {
+    let response: any = ''
+    if (id) {
+      LogSuccess(`[/api/users] Get User Data By ID: ${id}`)
+      response = await getUserByID(id)
+      response.password = ''
     }
     return response
   }

@@ -21,9 +21,11 @@ export class UserController implements IUserController {
     if (id) {
       LogSuccess(`[/api/users] Get User BY ID: ${id}`)
       response = await getUserByID(id)
+      response.password = ''
     } else {
       LogSuccess('[/api/users] Get All Users Request')
       const response = await getAllUsers()
+      //todo: remove password from response
     }
     return response
   }

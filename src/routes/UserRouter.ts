@@ -1,7 +1,9 @@
 import express, { Request, Response } from 'express'
 import { UserController } from '../controller/UserController'
 import { LogInfo } from '../utils/logger'
+import bodyParser from 'body-parser'
 
+let jsonParser = bodyParser.json()
 //Router from express
 
 let userRouter = express.Router()
@@ -28,25 +30,6 @@ userRouter
     // Obtain response
     const response = await controller.deleteUser(id)
     return res.status(200).send(response)
-  })
-  //POST:
-  .post(async (req: Request, res: Response) => {
-    let name: any = req?.query?.name
-    let email: any = req?.query?.email
-    let age: any = req?.query?.age
-
-    // let name2: any = req?.body?.name
-    // LogInfo(`Name in BODY: ${name2}`)
-
-    const controller: UserController = new UserController()
-    let user = {
-      name: name,
-      email: email,
-      age: age,
-    }
-    // Obtain response
-    const response = await controller.createUser(user)
-    return res.status(201).send(response)
   })
   .put(async (req: Request, res: Response) => {
     //Obtain query param (ID)

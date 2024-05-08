@@ -4,6 +4,11 @@ import { IUser } from '../interfaces/IUser.interface'
 import { IAuth } from '../interfaces/IAuth.interface'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+
+//Enviroment variables
+dotenv.config()
+const secret = process.env.SECRETKEY || 'mysecret'
 //CRUD
 /**
  * Method to obtain all Users from Collection "Users" in Mongo Sever
@@ -76,25 +81,34 @@ export const registerUser = async (user: IUser): Promise<any | undefined> => {
 export const loginUser = async (auth: IAuth): Promise<any | undefined> => {
   try {
     let userModel = userEntity()
+
+    let userFound: IUser | undefined = undefined
+    let token = undefined
     //Find user by email
-    userModel.findOne({ email: auth.email }, (err: any, user: IUser) => {
-      if (err) {
-        //(500)
-      }
-      if (!user) {
-        //(404)
-      }
-      //use bcrypt to compare password
-      let validPassword = bcrypt.compareSync(auth.password, user.password)
-      if (!validPassword) {
-        //(401) not authorised
-      }
-      // Crete jwt
-      let token = jwt.sign({ email: user.email }, 'SECRET', {
-        expiresIn: '2h',
+    await userModel
+      .findOne({ email: auth.email })
+      .then((user: IUser) => {
+        userFound = user
       })
-      return token
+      .catch((error) => {
+        console.error(`[ERROR Authentication in ORM]: User Not Found`)
+        throw new Error(
+          `[ERROR Authentication in ORM]: User Not Found: ${error}`
+        )
+      })
+    let validPassword = bcrypt.compareSync(auth.password, userFound!.password)
+    if (!validPassword) {
+      console.error(`[ERROR Authentication in ORM]: User Not Found`)
+      throw new Error(`[ERROR Authentication in ORM]: User Not Found`)
+    }
+    //Generate JWT
+    token = jwt.sign({ email: userFound!.email }, secret, {
+      expiresIn: '2h',
     })
+    return {
+      user: userFound,
+      token,
+    }
   } catch (error) {
     LogError(`[ORM ERROR]: Creating User ${error}`)
   }
