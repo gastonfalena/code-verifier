@@ -18,7 +18,7 @@ userRouter
     // Obtain response
     const response = await controller.getUsers(id)
     //Send to the client the response
-    return res.send(response)
+    return res.status(200).send(response)
   })
   .delete(async (req: Request, res: Response) => {
     //Obtain query param (ID)
@@ -27,13 +27,16 @@ userRouter
     const controller: UserController = new UserController()
     // Obtain response
     const response = await controller.deleteUser(id)
-    return res.send(response)
+    return res.status(200).send(response)
   })
   //POST:
   .post(async (req: Request, res: Response) => {
     let name: any = req?.query?.name
     let email: any = req?.query?.email
     let age: any = req?.query?.age
+
+    // let name2: any = req?.body?.name
+    // LogInfo(`Name in BODY: ${name2}`)
 
     const controller: UserController = new UserController()
     let user = {
@@ -43,7 +46,7 @@ userRouter
     }
     // Obtain response
     const response = await controller.createUser(user)
-    return res.send(response)
+    return res.status(201).send(response)
   })
   .put(async (req: Request, res: Response) => {
     //Obtain query param (ID)
@@ -60,8 +63,14 @@ userRouter
     }
     // Obtain response
     const response = await controller.updateUser(id, user)
-    return res.send(response)
+    return res.status(204).send(response)
   })
 
 //Export Hello Router
 export default userRouter
+/**
+ * Get documents => 200 OK
+ * Creation docuemnts => 201 OK
+ * Deletion of documents =>200 (Entity) / 204 (no return)
+ * Update of documents => 200 (Entity) / 204 (no return)
+ */
