@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import { UserController } from '../controller/UserController'
 import { LogInfo } from '../utils/logger'
 import bodyParser from 'body-parser'
+import { verifyToken } from '@/middlewares/verifyToken.middleware'
 
 let jsonParser = bodyParser.json()
 //Router from express
@@ -12,17 +13,19 @@ let userRouter = express.Router()
 userRouter
   .route('/')
   //Get:
-  .get(async (req: Request, res: Response) => {
+  .get(verifyToken, async (req: Request, res: Response) => {
     //Obtain query param (ID)
     let id: any = req?.query?.id
     LogInfo(`Query Param: ${id}`)
     const controller: UserController = new UserController()
     // Obtain response
-    const response = await controller.getUsers(id)
+    let limit = 1
+    let page = 1
+    const response = await controller.getUsers(limit, page, id)
     //Send to the client the response
     return res.status(200).send(response)
   })
-  .delete(async (req: Request, res: Response) => {
+  .delete(verifyToken, async (req: Request, res: Response) => {
     //Obtain query param (ID)
     let id: any = req?.query?.id
     LogInfo(`Query Param: ${id}`)
@@ -31,7 +34,7 @@ userRouter
     const response = await controller.deleteUser(id)
     return res.status(200).send(response)
   })
-  .put(async (req: Request, res: Response) => {
+  .put(verifyToken, async (req: Request, res: Response) => {
     //Obtain query param (ID)
     let id: any = req?.query?.id
     let name: any = req?.query?.name

@@ -13,9 +13,14 @@ const secret = process.env.SECRETKEY || 'mysecret'
 /**
  * Method to obtain all Users from Collection "Users" in Mongo Sever
  */
-export const getAllUsers = async (): Promise<any[] | undefined> => {
+export const getAllUsers = async (
+  page: number,
+  limit: number
+): Promise<any[] | undefined> => {
   try {
     let userModel = userEntity()
+    let response: any = {}
+
     // Search all users
     return await userModel.find({ isDelete: false })
   } catch (error) {

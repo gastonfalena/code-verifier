@@ -16,7 +16,11 @@ export class UserController implements IUserController {
    * @returns All user or user found by Id
    */
   @Get('/')
-  public async getUsers(@Query() id?: string): Promise<any> {
+  public async getUsers(
+    @Query() page: number,
+    @Query() limit: number,
+    @Query() id?: string
+  ): Promise<any> {
     let response: any = ''
     if (id) {
       LogSuccess(`[/api/users] Get User BY ID: ${id}`)
@@ -24,7 +28,7 @@ export class UserController implements IUserController {
       response.password = ''
     } else {
       LogSuccess('[/api/users] Get All Users Request')
-      const response = await getAllUsers()
+      const response = await getAllUsers(page, limit)
       //todo: remove password from response
     }
     return response
@@ -55,18 +59,7 @@ export class UserController implements IUserController {
    * @param {string} id Id of user to retreive (optional)
    * @returns All user or user found by Id
    */
-  @Post('/')
-  public async createUser(user: any): Promise<any> {
-    let response: any = ''
 
-    await this.createUser(user).then((r) => {
-      LogSuccess(`[/api/users] Create User: ${user}`)
-      response = {
-        message: `User created: ${user.name}`,
-      }
-    })
-    return response
-  }
   @Put('/')
   public async updateUser(@Query() id: string, user: any): Promise<any> {
     let response: any = ''
