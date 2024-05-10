@@ -16,12 +16,15 @@ userRouter
   .get(verifyToken, async (req: Request, res: Response) => {
     //Obtain query param (ID)
     let id: any = req?.query?.id
+
+    // Pagination
+    let page: any = req?.query?.page || 1
+    let limit: any = req?.query?.limit || 10
     LogInfo(`Query Param: ${id}`)
     const controller: UserController = new UserController()
     // Obtain response
-    let limit = 1
-    let page = 1
-    const response = await controller.getUsers(limit, page, id)
+
+    const response = await controller.getUsers(page, limit, id)
     //Send to the client the response
     return res.status(200).send(response)
   })

@@ -5,6 +5,7 @@ import { IAuth } from '../interfaces/IAuth.interface'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import { UserResponse } from '../types/UsersResponse.types'
 
 //Enviroment variables
 dotenv.config()
@@ -16,13 +17,34 @@ const secret = process.env.SECRETKEY || 'mysecret'
 export const getAllUsers = async (
   page: number,
   limit: number
-): Promise<any[] | undefined> => {
+): Promise<UserResponse | undefined> => {
   try {
     let userModel = userEntity()
-    let response: any = {}
-
+    let response: UserResponse = {
+      users: [],
+      totalPages: 0,
+      currentPage: page,
+    }
     // Search all users
-    return await userModel.find({ isDelete: false })
+    await userModel
+      .find({ isDeleted: false })
+      .select('name email age')
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec()
+      .then((users: IUser[]) => {
+        users.forEach((user: IUser) => {
+          user.password = ''
+        })
+        response.users = users
+      })
+    // Count total documents in collections "Users"
+    await userModel.countDocuments().then((total: number) => {
+      response.totalPages = Math.ceil(total / limit) //total number pages
+      response.currentPage = page
+    })
+
+    return response
   } catch (error) {
     LogError(`[ORM ERROR]: Getting All Users ${error}`)
   }
@@ -32,7 +54,7 @@ export const getUserByID = async (id: string): Promise<any | undefined> => {
   try {
     let userModels = userEntity()
     //Search User By ID
-    return await userModels.findById(id)
+    return await userModels.findById(id).select('name email age')
   } catch (error) {
     LogError(`[ORM ERROR]: Getting User By ID ${error}`)
   }
