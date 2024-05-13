@@ -8,6 +8,7 @@ import helloRouter from './HelloRouter'
 import { LogInfo } from '../utils/logger'
 import userRouter from './UserRouter'
 import authRouter from './AuthRouter'
+import kataRouter from './KataRouter'
 
 //Server instance
 let server = express()
@@ -30,5 +31,7 @@ server.use('/hello', helloRouter) //http://localhost:8000/api/hello
 server.use('/users', userRouter) //http://localhost:8000/api/users ---> UserRouter
 //Auth router
 server.use('/auth', authRouter) //http://localhost:8000/api/auth ---> AuthRouter
+//Katas router
+server.use('/katas', kataRouter) //http://localhost:8000/api/katas ---> KataRouter
 //Add more routes to the app
 export default server

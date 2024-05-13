@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express'
 import { UserController } from '../controller/UserController'
 import { LogInfo } from '../utils/logger'
 import bodyParser from 'body-parser'
-import { verifyToken } from '@/middlewares/verifyToken.middleware'
+import { verifyToken } from '../middlewares/verifyToken.middleware'
 
 let jsonParser = bodyParser.json()
 //Router from express
