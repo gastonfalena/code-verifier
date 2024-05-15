@@ -24,6 +24,7 @@ authRouter
         email,
         password: hashedPassword,
         age,
+        katas: [],
       }
       const controller: AuthController = new AuthController()
       // Obtain response

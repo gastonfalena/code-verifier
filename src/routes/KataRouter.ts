@@ -98,11 +98,11 @@ kataRouter
       name &&
       description &&
       level &&
-      intents &&
-      starts &&
+      intents >= 0 &&
+      starts >= 0 &&
       creator &&
       solution &&
-      participants
+      participants.length >= 0
     ) {
     } else {
       return res.status(400).send({

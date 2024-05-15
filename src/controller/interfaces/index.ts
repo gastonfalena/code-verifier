@@ -10,6 +10,8 @@ export interface IHelloController {
 export interface IUserController {
   // Read all users from database || get User by id
   getUsers(page: number, limit: number, id?: string): Promise<any>
+  //Get all katas of a User
+  getKatas(page: number, limit: number, id: string): Promise<any>
   //Delete user by id
   deleteUser(id?: string): Promise<any>
   //Update user

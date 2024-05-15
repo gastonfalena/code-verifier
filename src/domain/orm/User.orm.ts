@@ -6,6 +6,9 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { UserResponse } from '../types/UsersResponse.types'
+import { kataEntity } from '../entities/Kata.entity'
+import { IKata } from '../interfaces/IKata.interface'
+import mongoose from 'mongoose'
 
 //Enviroment variables
 dotenv.config()
@@ -54,7 +57,7 @@ export const getUserByID = async (id: string): Promise<any | undefined> => {
   try {
     let userModels = userEntity()
     //Search User By ID
-    return await userModels.findById(id).select('name email age')
+    return await userModels.findById(id).select('name email age katas')
   } catch (error) {
     LogError(`[ORM ERROR]: Getting User By ID ${error}`)
   }
@@ -142,6 +145,46 @@ export const loginUser = async (auth: IAuth): Promise<any | undefined> => {
 }
 //Logout User
 export const logoutUser = async (): Promise<any | undefined> => {}
-//TODO:
 
-//-Get User By Email
+export const getKatasFromUser = async (
+  page: number,
+  limit: number,
+  id: string
+): Promise<UserResponse | undefined> => {
+  try {
+    let userModel = userEntity()
+    let katasModel = kataEntity()
+    let katasFound: IKata[] = []
+    let response: any = {
+      katas: [],
+    }
+    await userModel
+      .findById(id)
+      .then(async (user: IUser) => {
+        response.user = user.email
+        let objectIds: mongoose.Types.ObjectId[] = []
+        user.katas.forEach((kataId: string) => {
+          let objectID = new mongoose.Types.ObjectId(kataId)
+          objectIds.push(objectID)
+        })
+        await katasModel
+          .find({ _id: { $in: objectIds } })
+          .then((katas: IKata[]) => {
+            katasFound = katas
+          })
+      })
+      .catch((error) => {
+        LogError(`[ORM ERROR]: Obtaining User ${error}`)
+      })
+    response.katas = katasFound
+    // Count total documents in collections "Users"
+    await userModel.countDocuments().then((total: number) => {
+      response.totalPages = Math.ceil(total / limit) //total number pages
+      response.currentPage = page
+    })
+
+    return response
+  } catch (error) {
+    LogError(`[ORM ERROR]: Getting All Users ${error}`)
+  }
+}

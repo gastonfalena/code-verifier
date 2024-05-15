@@ -4,6 +4,7 @@ import { LogSuccess, LogError, LogWarning } from '../utils/logger'
 import {
   deleteUserByID,
   getAllUsers,
+  getKatasFromUser,
   getUserByID,
   updateUserByID,
 } from '../domain/orm/User.orm'
@@ -11,10 +12,6 @@ import {
 @Route('/api/users')
 @Tags('UserController')
 export class UserController implements IUserController {
-  /**
-   * @param {string} id Id of user to retreive (optional)
-   * @returns All user or user found by Id
-   */
   @Get('/')
   public async getUsers(
     @Query() page: number,
@@ -25,11 +22,9 @@ export class UserController implements IUserController {
     if (id) {
       LogSuccess(`[/api/users] Get User BY ID: ${id}`)
       response = await getUserByID(id)
-      response.password = ''
     } else {
       LogSuccess('[/api/users] Get All Users Request')
       const response = await getAllUsers(page, limit)
-      //todo: remove password from response
     }
     return response
   }
@@ -78,4 +73,26 @@ export class UserController implements IUserController {
     }
     return response
   }
+  @Get('/katas')
+  public async getKatas(
+    @Query() page: number,
+    @Query() limit: number,
+    @Query() id: string
+  ): Promise<any> {
+    let response: any = ''
+    if (id) {
+      LogSuccess(`[/api/users/katas] Get Katas: ${id}`)
+      response = await getKatasFromUser(page, limit, id)
+    } else {
+      LogSuccess('[/api/users/katas] Get KatasRequest')
+      response = {
+        message: 'ID from user is needed',
+      }
+    }
+    return response
+  }
+  /**
+   * @param {string} id Id of user to retreive (optional)
+   * @returns All user or user found by Id
+   */
 }

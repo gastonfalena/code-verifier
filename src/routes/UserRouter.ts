@@ -54,6 +54,24 @@ userRouter
     const response = await controller.updateUser(id, user)
     return res.status(204).send(response)
   })
+// http://localhost:8000/api/users/katas
+userRouter
+  .route('/katas')
+  //Get:
+  .get(verifyToken, async (req: Request, res: Response) => {
+    //Obtain query param (ID)
+    let id: any = req?.query?.id
+
+    // Pagination
+    let page: any = req?.query?.page || 1
+    let limit: any = req?.query?.limit || 10
+    const controller: UserController = new UserController()
+    // Obtain response
+
+    const response = await controller.getKatas(page, limit, id)
+    //Send to the client the response
+    return res.status(200).send(response)
+  })
 
 //Export Hello Router
 export default userRouter
